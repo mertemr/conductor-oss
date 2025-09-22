@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1.7.0-labs
+
 #
 # conductor:server - Build Conductor Server
 #
@@ -9,14 +11,14 @@ FROM openjdk:17-bullseye AS builder
 LABEL maintainer="Orkes OSS <oss@orkes.io>"
 
 # Copy the project directly onto the image
-COPY . /conductor
 WORKDIR /conductor
 
-# Build the server on run
-RUN ./gradlew build -x test
-WORKDIR /server/build/libs
-RUN ls -ltr
+COPY --exclude=docker/ --exclude=ui/ . .
 
+# Build the server on run, using Docker build cache for Gradle dependencies
+RUN --mount=type=cache,target=/root/.gradle/caches \
+    --mount=type=cache,target=/root/.gradle/wrapper \
+    ./gradlew build -x test
 
 #
 # conductor:server - Build Conductor UI

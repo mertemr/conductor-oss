@@ -11,7 +11,7 @@ services:
       context: ../
       dockerfile: docker/server/Dockerfile
       args:
-        YARN_OPTS: ${YARN_OPTS}
+        YARN_OPTS: ${YARN_OPTS:-}
     networks:
       - internal
     ports:

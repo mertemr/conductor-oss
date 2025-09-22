@@ -43,12 +43,14 @@ RUN apk add --no-cache \
 ENV REACT_APP_MONACO_EDITOR_USING_CDN=false \
     REACT_APP_ENABLE_ERRORS_INSPECTOR=true
 
+COPY ./ui/public ./public
+
 RUN --mount=type=cache,target=/ui/node_modules \
     --mount=type=cache,target=/root/.yarn \
     --mount=type=bind,source=./ui/package.json,target=package.json \
     --mount=type=bind,source=./ui/yarn.lock,target=yarn.lock \
-    --mount=type=bind,source=./ui/public,target=public \
-    yarn ${YARN_OPTS:-} install && cp -r node_modules/monaco-editor public/
+    yarn ${YARN_OPTS:-} install --frozen-lockfile --no-progress && \
+    cp -r node_modules/monaco-editor public/
 
 ENV YARN_CACHE_FOLDER=/root/.yarn
 
@@ -56,7 +58,7 @@ COPY ./ui .
 
 RUN --mount=type=cache,target=/root/.yarn \
     --mount=type=cache,target=/ui/node_modules \
-    yarn ${YARN_OPTS:-} --frozen-lockfile build
+    yarn ${YARN_OPTS:-} build
 
 
 # ===========================================================================================================

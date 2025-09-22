@@ -1,8 +1,15 @@
 # General
+build
+.vscode
+.idea
+*.log
 
 # Backend 
 server/build/libs
+**/.gradle
 
 # UI
 **/node_modules
 ui/build
+
+.git*

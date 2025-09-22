@@ -49,8 +49,9 @@ RUN --mount=type=cache,target=/ui/node_modules \
     --mount=type=cache,target=/root/.yarn \
     --mount=type=bind,source=./ui/package.json,target=package.json \
     --mount=type=bind,source=./ui/yarn.lock,target=yarn.lock \
-    yarn ${YARN_OPTS:-} install --frozen-lockfile --no-progress && \
-    cp -r node_modules/monaco-editor public/
+    yarn ${YARN_OPTS:-} install --frozen-lockfile --no-progress
+
+RUN cp -r node_modules/monaco-editor public/
 
 ENV YARN_CACHE_FOLDER=/root/.yarn
 
@@ -69,7 +70,7 @@ FROM alpine:3.22 AS server
 LABEL maintainer="Orkes OSS <oss@orkes.io>"
 
 RUN apk add --no-cache \
-    curl ca-certificates nginx && \
+    openjdk17 curl ca-certificates nginx && \
     update-ca-certificates && \
     rm -rf /var/cache/apk/*
 
